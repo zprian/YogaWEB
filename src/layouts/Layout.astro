@@ -37,15 +37,25 @@ const desc = description ?? t(lang, 'hero.subtitle');
           <li><a href={getLocalizedPath(lang, '/essential-oils')}>{t(lang, 'nav.oils')}</a></li>
           <li><a href={getLocalizedPath(lang, '/contact')}>{t(lang, 'nav.contact')}</a></li>
           <li class="lang-switcher">
-            {supportedLangs.map(l => (
-              <a
-                href={getLocalizedPath(l, Astro.url.pathname)}
-                class:list={['lang-btn', { active: l === lang }]}
-                lang={l}
-              >
-                {langNames[l]}
-              </a>
-            ))}
+            <div class="lang-dropdown">
+              <button class="lang-current" aria-haspopup="true" aria-expanded="false">
+                🌐 <span>{langNames[lang]}</span> ▾
+              </button>
+              <ul class="lang-menu" role="menu">
+                {supportedLangs.map(l => (
+                  <li role="none">
+                    <a
+                      href={getLocalizedPath(l, Astro.url.pathname)}
+                      role="menuitem"
+                      class:list={{ active: l === lang }}
+                      lang={l}
+                    >
+                      {langNames[l]}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </li>
         </ul>
       </nav>
@@ -59,6 +69,21 @@ const desc = description ?? t(lang, 'hero.subtitle');
       <p>&copy; {new Date().getFullYear()} Yoga Studio. {t(lang, 'footer.rights')}</p>
       <p><a href={getLocalizedPath(lang, '/contact')}>{t(lang, 'footer.contact')}</a></p>
     </footer>
+
+    <script>
+      // Language dropdown toggle
+      const dropdown = document.querySelector('.lang-dropdown');
+      const btn = dropdown?.querySelector('.lang-current');
+      btn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown?.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(dropdown?.classList.contains('open')));
+      });
+      document.addEventListener('click', () => {
+        dropdown?.classList.remove('open');
+        btn?.setAttribute('aria-expanded', 'false');
+      });
+    </script>
 
     <script>
       if (window.netlifyIdentity) {
@@ -141,26 +166,61 @@ const desc = description ?? t(lang, 'hero.subtitle');
   .nav-links a { color: var(--text); font-size: 0.9rem; transition: color 0.2s; }
   .nav-links a:hover { color: var(--green); text-decoration: none; }
 
-  /* Language switcher */
+  /* Language switcher dropdown */
   .lang-switcher {
-    display: flex;
-    gap: 0.25rem;
     border-left: 1px solid #ddd;
     padding-left: 1rem;
     margin-left: 0.25rem;
   }
 
-  .lang-btn {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    color: var(--text-muted) !important;
-    border: 1px solid transparent;
-    transition: all 0.2s;
+  .lang-dropdown { position: relative; }
+
+  .lang-current {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    padding: 0.3rem 0.7rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: var(--text);
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+    transition: border-color 0.2s;
   }
 
-  .lang-btn:hover { border-color: var(--green); color: var(--green) !important; text-decoration: none; }
-  .lang-btn.active { background: var(--green); color: var(--white) !important; border-color: var(--green); }
+  .lang-current:hover { border-color: var(--green); color: var(--green); }
+
+  .lang-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    background: var(--white);
+    border: 1px solid #e0e0e0;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    list-style: none;
+    min-width: 130px;
+    z-index: 200;
+    overflow: hidden;
+  }
+
+  .lang-menu a {
+    display: block;
+    padding: 0.6rem 1rem;
+    font-size: 0.88rem;
+    color: var(--text);
+    transition: background 0.15s;
+  }
+
+  .lang-menu a:hover { background: var(--green-pale); text-decoration: none; color: var(--green); }
+  .lang-menu a.active { background: var(--green); color: var(--white); font-weight: 600; }
+
+  .lang-dropdown:focus-within .lang-menu,
+  .lang-dropdown.open .lang-menu { display: block; }
 
   .nav-toggle { display: none; }
   .nav-burger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }

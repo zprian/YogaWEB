@@ -31,6 +31,29 @@ const about = aboutEntry?.data;
     </div>
   </section>
 
+  <!-- ABOUT ME -->
+  <section class="container">
+    <div class="aboutme-grid">
+      <div class="aboutme-image-wrap">
+        {about?.image
+          ? <img src={about.image} alt={about?.name} class="aboutme-img" />
+          : <div class="aboutme-placeholder">🧘</div>
+        }
+      </div>
+      <div class="aboutme-text">
+        <div class="section-label">🌿 {t(lang, 'about.title')}</div>
+        <h2>{about?.name ?? 'Tu Nombre'}</h2>
+        <p class="aboutme-role">{about?.title ?? 'Instructora de Yoga Certificada'}</p>
+        <p>{about?.bio ?? ''}</p>
+        {about?.bio2 && <p>{about.bio2}</p>}
+        <div class="aboutme-actions">
+          <a href={`/${lang}/contact`} class="btn">{t(lang, 'about.cta_contact')}</a>
+          <a href={`/${lang}/schedules`} class="btn btn-outline">{t(lang, 'about.cta_schedule')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ABOUT YOGA -->
   <section class="container">
     <div class="about-grid">
@@ -88,31 +111,6 @@ const about = aboutEntry?.data;
       </div>
     </div>
   </section>
-
-  <!-- ABOUT ME -->
-  {about && (
-    <section class="container">
-      <div class="aboutme-grid">
-        <div class="aboutme-image-wrap">
-          {about.image
-            ? <img src={about.image} alt={about.name} class="aboutme-img" />
-            : <div class="aboutme-placeholder">🧘</div>
-          }
-        </div>
-        <div class="aboutme-text">
-          <div class="section-label">🌿 {t(lang, 'about.title')}</div>
-          <h2>{about.name}</h2>
-          <p class="aboutme-role">{about.title}</p>
-          <p>{about.bio}</p>
-          {about.bio2 && <p>{about.bio2}</p>}
-          <div class="aboutme-actions">
-            <a href={`/${lang}/contact`} class="btn">{t(lang, 'about.cta_contact')}</a>
-            <a href={`/${lang}/schedules`} class="btn btn-outline">{t(lang, 'about.cta_schedule')}</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  )}
 
   <!-- LATEST NEWS -->
   {latestNews.length > 0 && (

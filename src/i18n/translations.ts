@@ -395,7 +395,9 @@ export function t(lang: Lang, key: TranslationKey): string {
 }
 
 export function getLocalizedPath(lang: Lang, path: string): string {
-  const clean = path.replace(/^\/?(es|ca|en)/, '').replace(/^\//, '') || '';
+  // Remove lang prefix only when it's a full path segment (e.g. /es/ or /es at end)
+  // This prevents /essential-oils from being stripped to /sential-oils
+  const clean = path.replace(/^\/(es|ca|en)(\/|$)/, '/').replace(/^\//, '') || '';
   if (lang === defaultLang) return `/${clean}`;
   return `/${lang}${clean ? `/${clean}` : ''}`;
 }
