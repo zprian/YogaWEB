@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const oils = (await getCollection('oils'))
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<Layout title="Essential Oils" description="Discover how essential oils complement and deepen your yoga and wellness practice.">
+
+  <section class="page-hero">
+    <h1>Essential Oils</h1>
+    <p>Nature's wisdom in a bottle — discover how essential oils can deepen your practice and support your wellbeing.</p>
+  </section>
+
+  <div class="container">
+    <div class="intro card">
+      <h2>Oils & Yoga — A Natural Union</h2>
+      <p>
+        Essential oils and yoga share ancient roots in holistic wellness traditions. When combined mindfully,
+        they create a multi-sensory experience that amplifies the benefits of your practice — calming the
+        nervous system, opening the breath, grounding the mind, and energizing the body.
+      </p>
+      <p>
+        We use only pure, therapeutic-grade essential oils in our studio. Below you will find our curated
+        collection of oils, each selected for its synergy with yoga and meditation.
+      </p>
+    </div>
+
+    <div class="oils-grid">
+      {oils.map(async oil => {
+        const { Content } = await oil.render();
+        return (
+          <article class="card oil-card">
+            <div class="oil-header">
+              <h2>{oil.data.title}</h2>
+              <p class="oil-desc">{oil.data.description}</p>
+            </div>
+            {oil.data.benefits && oil.data.benefits.length > 0 && (
+              <div class="benefits">
+                <h3>Benefits</h3>
+                <ul>
+                  {oil.data.benefits.map(b => <li>{b}</li>)}
+                </ul>
+              </div>
+            )}
+            <div class="oil-body">
+              <Content />
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <div class="card disclaimer">
+      <strong>Disclaimer:</strong> Essential oils are used for aromatic and topical purposes as part of a
+      wellness practice. Always dilute before skin application. Consult a healthcare professional before
+      use if pregnant, nursing, or managing a medical condition.
+    </div>
+  </div>
+
+</Layout>
+
+<style>
+  .intro { margin-bottom: 2.5rem; }
+  .intro h2 { font-size: 1.7rem; margin-bottom: 0.75rem; }
+  .intro p { color: var(--text-muted); margin-bottom: 0.75rem; }
+
+  .oils-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .oil-card { display: flex; flex-direction: column; gap: 1rem; }
+
+  .oil-header h2 { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .oil-desc { color: var(--text-muted); font-style: italic; }
+
+  .benefits h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--brown);
+    margin-bottom: 0.5rem;
+  }
+
+  .benefits ul { list-style: none; padding: 0; }
+  .benefits li {
+    padding: 0.3rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .benefits li::before { content: '✓'; position: absolute; left: 0; color: var(--green); }
+
+  .oil-body { font-size: 0.95rem; }
+  .oil-body :global(p) { color: var(--text-muted); margin-bottom: 0.75rem; }
+  .oil-body :global(strong) { color: var(--green); }
+
+  .disclaimer {
+    background: var(--brown-light);
+    border-left: 4px solid var(--brown);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+</style>

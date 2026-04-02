@@ -1,0 +1,136 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+
+const scheduleData = await getEntry('schedules', 'schedule');
+const classes = scheduleData?.data.classes ?? [];
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const levelColors: Record<string, string> = {
+  'All levels': '#4a7c59',
+  'Beginner': '#6aab80',
+  'Intermediate': '#8b6f47',
+  'Advanced': '#c0392b',
+};
+---
+
+<Layout title="Schedules" description="View our weekly yoga class schedule and find the perfect class for you.">
+
+  <section class="page-hero">
+    <h1>Class Schedule</h1>
+    <p>Find the perfect class for your level, time, and goals. All are welcome.</p>
+  </section>
+
+  <div class="container">
+    <div class="legend">
+      {Object.entries(levelColors).map(([level, color]) => (
+        <span class="legend-item">
+          <span class="legend-dot" style={`background:${color}`}></span>
+          {level}
+        </span>
+      ))}
+    </div>
+
+    <div class="schedule-grid">
+      {days.map(day => {
+        const dayClasses = classes.filter(c => c.day === day);
+        if (dayClasses.length === 0) return null;
+        return (
+          <div class="day-column">
+            <h2 class="day-title">{day}</h2>
+            {dayClasses.map(cls => (
+              <div class="class-card" style={`border-left-color: ${levelColors[cls.level] ?? '#4a7c59'}`}>
+                <div class="class-time">{cls.time}</div>
+                <div class="class-name">{cls.name}</div>
+                <div class="class-meta">
+                  <span class="tag" style={`background:${levelColors[cls.level] ?? '#4a7c59'}22; color:${levelColors[cls.level] ?? '#4a7c59'}`}>{cls.level}</span>
+                  <span class="class-duration">{cls.duration}</span>
+                </div>
+                <div class="class-instructor">with {cls.instructor}</div>
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </div>
+
+    <div class="card cta-box">
+      <h3>New to yoga?</h3>
+      <p>Our Beginner and All-levels classes are the perfect place to start. No experience needed — just bring yourself!</p>
+      <a href="/contact" class="btn">Ask a Question</a>
+    </div>
+  </div>
+
+</Layout>
+
+<style>
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .day-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--green-pale);
+  }
+
+  .class-card {
+    background: var(--white);
+    border: 1px solid #ece9e0;
+    border-left: 4px solid var(--green);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow);
+  }
+
+  .class-time { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+  .class-name { font-size: 1.05rem; font-weight: bold; color: var(--green); margin-bottom: 0.5rem; }
+
+  .class-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .class-duration { font-size: 0.8rem; color: var(--text-muted); }
+  .class-instructor { font-size: 0.85rem; color: var(--text-muted); font-style: italic; }
+
+  .cta-box { max-width: 500px; margin: 0 auto; text-align: center; }
+  .cta-box h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+  .cta-box p { color: var(--text-muted); margin-bottom: 1.25rem; }
+</style>

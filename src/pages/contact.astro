@@ -1,0 +1,174 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Contact" description="Get in touch with our yoga studio — we'd love to hear from you.">
+
+  <section class="page-hero">
+    <h1>Get In Touch</h1>
+    <p>We'd love to hear from you. Reach out with questions, bookings, or just to say hello.</p>
+  </section>
+
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- FORM -->
+      <div>
+        <h2>Send Us a Message</h2>
+        <form
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          class="contact-form card"
+          action="/contact/success"
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="hidden" aria-hidden="true">
+            <label>Don't fill this out: <input name="bot-field" /></label>
+          </p>
+
+          <div class="field">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" required placeholder="Your name" />
+          </div>
+
+          <div class="field">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" required placeholder="your@email.com" />
+          </div>
+
+          <div class="field">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject">
+              <option value="">Select a topic…</option>
+              <option>Class Information</option>
+              <option>Workshop Registration</option>
+              <option>Private Sessions</option>
+              <option>Essential Oils</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="message">Message *</label>
+            <textarea id="message" name="message" required rows="5" placeholder="How can we help you?"></textarea>
+          </div>
+
+          <button type="submit" class="btn" style="width:100%">Send Message</button>
+        </form>
+      </div>
+
+      <!-- INFO -->
+      <div class="contact-info">
+        <h2>Studio Info</h2>
+
+        <div class="info-card card">
+          <div class="info-item">
+            <span class="info-icon">📍</span>
+            <div>
+              <strong>Location</strong>
+              <p>123 Serenity Lane<br />Your City, State 00000</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">📞</span>
+            <div>
+              <strong>Phone</strong>
+              <p><a href="tel:+10000000000">(000) 000-0000</a></p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">✉️</span>
+            <div>
+              <strong>Email</strong>
+              <p><a href="mailto:hello@yourstudio.com">hello@yourstudio.com</a></p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">🕐</span>
+            <div>
+              <strong>Studio Hours</strong>
+              <p>Monday – Friday: 6:30 AM – 8:00 PM<br />Saturday: 8:00 AM – 6:00 PM<br />Sunday: 9:00 AM – 5:00 PM</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card social-card">
+          <h3>Follow Us</h3>
+          <p style="color:var(--text-muted); margin-bottom:1rem">Stay connected for daily inspiration.</p>
+          <div class="social-links">
+            <a href="#" class="social-btn">Instagram</a>
+            <a href="#" class="social-btn">Facebook</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</Layout>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) { .contact-grid { grid-template-columns: 1fr; } }
+
+  h2 { font-size: 1.8rem; margin-bottom: 1.25rem; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .hidden { display: none; }
+
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+
+  input, textarea, select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(74,124,89,0.1);
+  }
+
+  textarea { resize: vertical; }
+
+  .info-card { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.5rem; }
+
+  .info-item { display: flex; gap: 1rem; align-items: flex-start; }
+  .info-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .info-item strong { display: block; margin-bottom: 0.2rem; }
+  .info-item p { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
+  .info-item a { color: var(--green); }
+
+  .social-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .social-links { display: flex; gap: 0.75rem; }
+
+  .social-btn {
+    background: var(--green-pale);
+    color: var(--green);
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .social-btn:hover { background: var(--green); color: var(--white); text-decoration: none; }
+</style>

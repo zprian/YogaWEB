@@ -1,0 +1,59 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Where media files will be stored
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+# Date format used in the UI
+locale: en
+
+collections:
+  # ─── NEWS ────────────────────────────────────────────────────────────
+  - name: "news"
+    label: "News & Events"
+    folder: "src/content/news"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Short Description", name: "description", widget: "string", hint: "Appears as a summary on the news list page" }
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - { label: "Content", name: "body", widget: "markdown" }
+
+  # ─── SCHEDULE ────────────────────────────────────────────────────────
+  - name: "schedules"
+    label: "Class Schedule"
+    files:
+      - label: "Weekly Schedule"
+        name: "schedule"
+        file: "src/content/schedules/schedule.json"
+        fields:
+          - label: "Classes"
+            name: "classes"
+            widget: "list"
+            fields:
+              - { label: "Day", name: "day", widget: "select", options: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] }
+              - { label: "Time", name: "time", widget: "string", hint: "e.g. 7:00 AM" }
+              - { label: "Class Name", name: "name", widget: "string" }
+              - { label: "Instructor", name: "instructor", widget: "string" }
+              - { label: "Level", name: "level", widget: "select", options: ["All levels","Beginner","Intermediate","Advanced"] }
+              - { label: "Duration", name: "duration", widget: "string", hint: "e.g. 60 min" }
+
+  # ─── ESSENTIAL OILS ──────────────────────────────────────────────────
+  - name: "oils"
+    label: "Essential Oils"
+    folder: "src/content/oils"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Oil Name", name: "title", widget: "string" }
+      - { label: "Short Description", name: "description", widget: "string" }
+      - label: "Benefits"
+        name: "benefits"
+        widget: "list"
+        field: { label: "Benefit", name: "benefit", widget: "string" }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Full Description", name: "body", widget: "markdown" }

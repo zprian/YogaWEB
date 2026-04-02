@@ -1,0 +1,14 @@
+{
+  "classes": [
+    { "day": "Monday", "time": "7:00 AM", "name": "Morning Flow", "instructor": "Sofia", "level": "All levels", "duration": "60 min" },
+    { "day": "Monday", "time": "6:00 PM", "name": "Hatha Yoga", "instructor": "Carlos", "level": "Beginner", "duration": "75 min" },
+    { "day": "Tuesday", "time": "8:00 AM", "name": "Vinyasa Flow", "instructor": "Sofia", "level": "Intermediate", "duration": "60 min" },
+    { "day": "Wednesday", "time": "7:00 AM", "name": "Morning Meditation", "instructor": "Laura", "level": "All levels", "duration": "45 min" },
+    { "day": "Wednesday", "time": "6:00 PM", "name": "Yin Yoga", "instructor": "Carlos", "level": "All levels", "duration": "90 min" },
+    { "day": "Thursday", "time": "8:00 AM", "name": "Power Yoga", "instructor": "Sofia", "level": "Advanced", "duration": "60 min" },
+    { "day": "Friday", "time": "7:00 AM", "name": "Morning Flow", "instructor": "Laura", "level": "All levels", "duration": "60 min" },
+    { "day": "Friday", "time": "5:30 PM", "name": "Restorative Yoga", "instructor": "Carlos", "level": "All levels", "duration": "75 min" },
+    { "day": "Saturday", "time": "9:00 AM", "name": "Weekend Vinyasa", "instructor": "Sofia", "level": "Intermediate", "duration": "90 min" },
+    { "day": "Sunday", "time": "10:00 AM", "name": "Gentle Sunday Flow", "instructor": "Laura", "level": "Beginner", "duration": "75 min" }
+  ]
+}

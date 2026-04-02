@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('news'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title="News" description="Stay up to date with the latest news, events, and workshops from our yoga studio.">
+
+  <section class="page-hero">
+    <h1>News & Events</h1>
+    <p>Stay connected with what's happening at the studio.</p>
+  </section>
+
+  <div class="container">
+    {posts.length === 0 && <p style="color:var(--text-muted)">No posts yet. Check back soon!</p>}
+    <div class="posts-list">
+      {posts.map(post => (
+        <a href={`/news/${post.slug}`} class="card post-item">
+          <div class="post-date">
+            <time>{post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+          </div>
+          <div class="post-content">
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+            <span class="read-more">Read more →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+
+</Layout>
+
+<style>
+  .posts-list { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .post-item {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 1.5rem;
+    color: var(--text);
+    align-items: start;
+    transition: transform 0.2s;
+  }
+
+  .post-item:hover { transform: translateX(4px); text-decoration: none; }
+
+  .post-date {
+    text-align: right;
+    padding-top: 0.2rem;
+  }
+
+  .post-date time {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: block;
+  }
+
+  .post-content h2 { font-size: 1.3rem; margin-bottom: 0.4rem; }
+  .post-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .read-more { font-size: 0.9rem; color: var(--green); font-style: italic; }
+
+  @media (max-width: 520px) {
+    .post-item { grid-template-columns: 1fr; }
+    .post-date { text-align: left; }
+  }
+</style>
