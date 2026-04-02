@@ -1,76 +1,11 @@
 ---
-import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('news');
-  return posts.map(post => ({ params: { slug: post.slug }, props: { post } }));
+  return posts.map(post => ({ params: { slug: post.slug } }));
 }
 
-const { post } = Astro.props;
-const { Content } = await post.render();
+const { slug } = Astro.params;
+return Astro.redirect(`/es/news/${slug}`, 301);
 ---
-
-<Layout title={post.data.title} description={post.data.description}>
-
-  <article>
-    <div class="post-hero">
-      <div class="post-hero-inner">
-        <a href="/news" class="back-link">← Back to News</a>
-        <time>{post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-        <h1>{post.data.title}</h1>
-        <p class="lead">{post.data.description}</p>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="prose">
-        <Content />
-      </div>
-      <div style="margin-top:3rem; padding-top:2rem; border-top:1px solid #ece9e0">
-        <a href="/news" class="btn btn-outline">← All News</a>
-      </div>
-    </div>
-  </article>
-
-</Layout>
-
-<style>
-  .post-hero {
-    background: var(--green-pale);
-    padding: 4rem 1.5rem 3rem;
-  }
-
-  .post-hero-inner { max-width: 720px; margin: 0 auto; }
-
-  .back-link {
-    font-size: 0.9rem;
-    color: var(--green);
-    display: inline-block;
-    margin-bottom: 1rem;
-  }
-
-  .post-hero time {
-    display: block;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 0.75rem;
-  }
-
-  .post-hero h1 { font-size: 2.2rem; margin-bottom: 0.75rem; }
-  .lead { font-size: 1.15rem; color: var(--text-muted); }
-
-  .prose {
-    max-width: 720px;
-    font-size: 1.05rem;
-    line-height: 1.8;
-  }
-
-  .prose :global(h2) { font-size: 1.6rem; margin: 2rem 0 0.75rem; }
-  .prose :global(h3) { font-size: 1.3rem; margin: 1.5rem 0 0.5rem; }
-  .prose :global(p) { margin-bottom: 1.25rem; }
-  .prose :global(ul), .prose :global(ol) { margin: 0 0 1.25rem 1.5rem; }
-  .prose :global(li) { margin-bottom: 0.4rem; }
-  .prose :global(strong) { color: var(--green); }
-  .prose :global(em) { color: var(--brown); }
-</style>

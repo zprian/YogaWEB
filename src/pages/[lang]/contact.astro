@@ -1,0 +1,156 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { t, supportedLangs, type Lang } from '../../i18n/translations';
+
+export function getStaticPaths() {
+  return supportedLangs.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+---
+
+<Layout title={t(lang, 'nav.contact')} lang={lang}>
+
+  <section class="page-hero">
+    <h1>{t(lang, 'contact.title')}</h1>
+    <p>{t(lang, 'contact.subtitle')}</p>
+  </section>
+
+  <div class="container">
+    <div class="contact-grid">
+      <div>
+        <h2>{t(lang, 'contact.form_title')}</h2>
+        <form
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          class="contact-form card"
+          action={`/${lang}/contact/success`}
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          <input type="hidden" name="lang" value={lang} />
+          <p class="hidden" aria-hidden="true"><label>Don't fill: <input name="bot-field" /></label></p>
+
+          <div class="field">
+            <label for="name">{t(lang, 'contact.name')} *</label>
+            <input type="text" id="name" name="name" required placeholder={t(lang, 'contact.name_placeholder')} />
+          </div>
+
+          <div class="field">
+            <label for="email">{t(lang, 'contact.email')} *</label>
+            <input type="email" id="email" name="email" required placeholder="email@ejemplo.com" />
+          </div>
+
+          <div class="field">
+            <label for="subject">{t(lang, 'contact.subject')}</label>
+            <select id="subject" name="subject">
+              <option value="">{t(lang, 'contact.subject_placeholder')}</option>
+              <option>{t(lang, 'contact.subject_class')}</option>
+              <option>{t(lang, 'contact.subject_workshop')}</option>
+              <option>{t(lang, 'contact.subject_private')}</option>
+              <option>{t(lang, 'contact.subject_oils')}</option>
+              <option>{t(lang, 'contact.subject_other')}</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="message">{t(lang, 'contact.message')} *</label>
+            <textarea id="message" name="message" required rows="5" placeholder={t(lang, 'contact.message_placeholder')}></textarea>
+          </div>
+
+          <button type="submit" class="btn" style="width:100%">{t(lang, 'contact.send')}</button>
+        </form>
+      </div>
+
+      <div class="contact-info">
+        <h2>{t(lang, 'contact.info_title')}</h2>
+
+        <div class="info-card card">
+          <div class="info-item">
+            <span class="info-icon">📍</span>
+            <div>
+              <strong>{t(lang, 'contact.location')}</strong>
+              <p>123 Serenity Lane<br />Your City, State 00000</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">📞</span>
+            <div>
+              <strong>{t(lang, 'contact.phone')}</strong>
+              <p><a href="tel:+10000000000">(000) 000-0000</a></p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">🕐</span>
+            <div>
+              <strong>{t(lang, 'contact.hours')}</strong>
+              <p>{t(lang, 'contact.hours_weekdays')}<br />{t(lang, 'contact.hours_saturday')}<br />{t(lang, 'contact.hours_sunday')}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card social-card">
+          <h3>{t(lang, 'contact.follow')}</h3>
+          <p style="color:var(--text-muted); margin-bottom:1rem">{t(lang, 'contact.follow_text')}</p>
+          <div class="social-links">
+            <a href="#" class="social-btn">Instagram</a>
+            <a href="#" class="social-btn">Facebook</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</Layout>
+
+<style>
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  @media (max-width: 760px) { .contact-grid { grid-template-columns: 1fr; } }
+
+  h2 { font-size: 1.8rem; margin-bottom: 1.25rem; }
+  .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+  .hidden { display: none; }
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  label { font-size: 0.9rem; font-weight: 600; }
+
+  input, textarea, select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(74,124,89,0.1);
+  }
+
+  textarea { resize: vertical; }
+
+  .info-card { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.5rem; }
+  .info-item { display: flex; gap: 1rem; align-items: flex-start; }
+  .info-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .info-item strong { display: block; margin-bottom: 0.2rem; }
+  .info-item p { color: var(--text-muted); font-size: 0.95rem; margin: 0; }
+  .info-item a { color: var(--green); }
+
+  .social-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .social-links { display: flex; gap: 0.75rem; }
+  .social-btn {
+    background: var(--green-pale);
+    color: var(--green);
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .social-btn:hover { background: var(--green); color: var(--white); text-decoration: none; }
+</style>

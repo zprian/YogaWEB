@@ -2,58 +2,90 @@ backend:
   name: git-gateway
   branch: main
 
-# Where media files will be stored
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
-
-# Date format used in the UI
-locale: en
+locale: es
 
 collections:
   # ─── NEWS ────────────────────────────────────────────────────────────
   - name: "news"
-    label: "News & Events"
+    label: "Noticias y Eventos"
     folder: "src/content/news"
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
-      - { label: "Short Description", name: "description", widget: "string", hint: "Appears as a summary on the news list page" }
-      - { label: "Featured Image", name: "image", widget: "image", required: false }
-      - { label: "Content", name: "body", widget: "markdown" }
+      - { label: "Título", name: "title", widget: "string" }
+      - { label: "Fecha de publicación", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Descripción corta", name: "description", widget: "string", hint: "Aparece como resumen en la lista de noticias" }
+      - { label: "Imagen destacada", name: "image", widget: "image", required: false }
+      - { label: "Contenido", name: "body", widget: "markdown" }
 
   # ─── SCHEDULE ────────────────────────────────────────────────────────
   - name: "schedules"
-    label: "Class Schedule"
+    label: "Horario de Clases"
     files:
-      - label: "Weekly Schedule"
+      - label: "Horario Semanal"
         name: "schedule"
         file: "src/content/schedules/schedule.json"
         fields:
-          - label: "Classes"
+          - label: "Clases"
             name: "classes"
             widget: "list"
             fields:
-              - { label: "Day", name: "day", widget: "select", options: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] }
-              - { label: "Time", name: "time", widget: "string", hint: "e.g. 7:00 AM" }
-              - { label: "Class Name", name: "name", widget: "string" }
-              - { label: "Instructor", name: "instructor", widget: "string" }
-              - { label: "Level", name: "level", widget: "select", options: ["All levels","Beginner","Intermediate","Advanced"] }
-              - { label: "Duration", name: "duration", widget: "string", hint: "e.g. 60 min" }
+              - { label: "Día", name: "day", widget: "select", options: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] }
+              - { label: "Hora", name: "time", widget: "string", hint: "Ej: 7:00 AM" }
+              - { label: "Nombre de la clase", name: "name", widget: "string" }
+              - { label: "Instructora/or", name: "instructor", widget: "string" }
+              - { label: "Nivel", name: "level", widget: "select", options: ["All levels","Beginner","Intermediate","Advanced"] }
+              - { label: "Duración", name: "duration", widget: "string", hint: "Ej: 60 min" }
 
   # ─── ESSENTIAL OILS ──────────────────────────────────────────────────
   - name: "oils"
-    label: "Essential Oils"
+    label: "Aceites Esenciales"
     folder: "src/content/oils"
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: "Oil Name", name: "title", widget: "string" }
-      - { label: "Short Description", name: "description", widget: "string" }
-      - label: "Benefits"
+      - { label: "Nombre del aceite", name: "title", widget: "string" }
+      - { label: "Descripción corta", name: "description", widget: "string" }
+      - label: "Beneficios"
         name: "benefits"
         widget: "list"
-        field: { label: "Benefit", name: "benefit", widget: "string" }
-      - { label: "Image", name: "image", widget: "image", required: false }
-      - { label: "Full Description", name: "body", widget: "markdown" }
+        field: { label: "Beneficio", name: "benefit", widget: "string" }
+      - { label: "Imagen del aceite", name: "image", widget: "image", required: false }
+      - { label: "Descripción completa", name: "body", widget: "markdown" }
+
+  # ─── ABOUT ME ────────────────────────────────────────────────────────
+  - name: "about"
+    label: "Sobre Mí"
+    files:
+      - label: "Mi Perfil"
+        name: "about"
+        file: "src/content/about/about.md"
+        fields:
+          - { label: "Nombre", name: "name", widget: "string" }
+          - { label: "Título / Rol", name: "title", widget: "string", hint: "Ej: Instructora de Yoga Certificada" }
+          - { label: "Biografía (párrafo 1)", name: "bio", widget: "text" }
+          - { label: "Biografía (párrafo 2)", name: "bio2", widget: "text", required: false }
+          - { label: "Mi foto", name: "image", widget: "image", required: false }
+          - { label: "Cuerpo (opcional)", name: "body", widget: "markdown", required: false }
+
+  # ─── SOCIAL / INSTAGRAM ──────────────────────────────────────────────
+  - name: "settings"
+    label: "Configuración"
+    files:
+      - label: "Redes Sociales"
+        name: "social"
+        file: "src/content/settings/social.json"
+        fields:
+          - { label: "Usuario de Instagram", name: "instagram_handle", widget: "string", hint: "Sin @, ej: yogastudio", required: false }
+          - { label: "URL de Instagram", name: "instagram_url", widget: "string", required: false }
+          - label: "Posts de Instagram (para incrustar en Noticias)"
+            name: "instagram_posts"
+            widget: "list"
+            hint: "Pega la URL de cada post de Instagram que quieras mostrar en la sección de Noticias"
+            fields:
+              - { label: "URL del post", name: "url", widget: "string", hint: "Ej: https://www.instagram.com/p/ABC123/" }
+              - { label: "Descripción", name: "caption", widget: "string", required: false }
+          - { label: "URL de Facebook", name: "facebook_url", widget: "string", required: false }
+          - { label: "WhatsApp (número con código de país)", name: "whatsapp", widget: "string", hint: "Ej: +34612345678", required: false }

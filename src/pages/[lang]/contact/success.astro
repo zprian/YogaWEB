@@ -1,0 +1,22 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { t, supportedLangs, type Lang } from '../../../i18n/translations';
+
+export function getStaticPaths() {
+  return supportedLangs.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+---
+
+<Layout title={t(lang, 'success.title')} lang={lang}>
+  <section class="page-hero" style="min-height:60vh; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <div style="font-size:4rem; margin-bottom:1rem">🙏</div>
+    <h1>{t(lang, 'success.heading')}</h1>
+    <p>{t(lang, 'success.text')}</p>
+    <div style="margin-top:2rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center">
+      <a href={`/${lang}`} class="btn">{t(lang, 'success.home')}</a>
+      <a href={`/${lang}/schedules`} class="btn btn-outline">{t(lang, 'success.schedules')}</a>
+    </div>
+  </section>
+</Layout>

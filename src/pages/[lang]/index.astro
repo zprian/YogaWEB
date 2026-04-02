@@ -1,0 +1,279 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { t, supportedLangs, type Lang } from '../../i18n/translations';
+
+export function getStaticPaths() {
+  return supportedLangs.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+
+const latestNews = (await getCollection('news'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const aboutEntry = await getEntry('about', 'about');
+const about = aboutEntry?.data;
+---
+
+<Layout title={t(lang, 'nav.home')} lang={lang}>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>{t(lang, 'hero.title')}</h1>
+      <p>{t(lang, 'hero.subtitle')}</p>
+      <div class="hero-actions">
+        <a href={`/${lang}/schedules`} class="btn">{t(lang, 'hero.cta_schedules')}</a>
+        <a href={`/${lang}/contact`} class="btn btn-outline">{t(lang, 'hero.cta_contact')}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT YOGA -->
+  <section class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>{t(lang, 'yoga.title')}</h2>
+        <p>{t(lang, 'yoga.p1')}</p>
+        <p>{t(lang, 'yoga.p2')}</p>
+        <a href={`/${lang}/schedules`} class="btn" style="margin-top:1rem">{t(lang, 'yoga.cta')}</a>
+      </div>
+      <div class="about-cards">
+        <div class="card benefit-card">
+          <div class="benefit-icon">🧘</div>
+          <h3>{t(lang, 'benefit.mindfulness')}</h3>
+          <p>{t(lang, 'benefit.mindfulness.desc')}</p>
+        </div>
+        <div class="card benefit-card">
+          <div class="benefit-icon">💪</div>
+          <h3>{t(lang, 'benefit.strength')}</h3>
+          <p>{t(lang, 'benefit.strength.desc')}</p>
+        </div>
+        <div class="card benefit-card">
+          <div class="benefit-icon">🌿</div>
+          <h3>{t(lang, 'benefit.wellness')}</h3>
+          <p>{t(lang, 'benefit.wellness.desc')}</p>
+        </div>
+        <div class="card benefit-card">
+          <div class="benefit-icon">🫁</div>
+          <h3>{t(lang, 'benefit.breathwork')}</h3>
+          <p>{t(lang, 'benefit.breathwork.desc')}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KUNDALINI -->
+  <section class="kundalini-section">
+    <div class="container">
+      <div class="kundalini-inner">
+        <div class="kundalini-text">
+          <div class="section-label">✨ {t(lang, 'kundalini.subtitle')}</div>
+          <h2>{t(lang, 'kundalini.title')}</h2>
+          <p>{t(lang, 'kundalini.p1')}</p>
+          <p>{t(lang, 'kundalini.p2')}</p>
+          <p>{t(lang, 'kundalini.p3')}</p>
+          <a href={`/${lang}/schedules`} class="btn" style="margin-top:1.25rem">{t(lang, 'yoga.cta')}</a>
+        </div>
+        <div class="kundalini-benefits">
+          {[1,2,3,4,5,6].map(i => (
+            <div class="kundalini-benefit">
+              <span class="k-icon">◈</span>
+              <span>{t(lang, `kundalini.benefit${i}` as any)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT ME -->
+  {about && (
+    <section class="container">
+      <div class="aboutme-grid">
+        <div class="aboutme-image-wrap">
+          {about.image
+            ? <img src={about.image} alt={about.name} class="aboutme-img" />
+            : <div class="aboutme-placeholder">🧘</div>
+          }
+        </div>
+        <div class="aboutme-text">
+          <div class="section-label">🌿 {t(lang, 'about.title')}</div>
+          <h2>{about.name}</h2>
+          <p class="aboutme-role">{about.title}</p>
+          <p>{about.bio}</p>
+          {about.bio2 && <p>{about.bio2}</p>}
+          <div class="aboutme-actions">
+            <a href={`/${lang}/contact`} class="btn">{t(lang, 'about.cta_contact')}</a>
+            <a href={`/${lang}/schedules`} class="btn btn-outline">{t(lang, 'about.cta_schedule')}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- LATEST NEWS -->
+  {latestNews.length > 0 && (
+    <section class="news-section">
+      <div class="container">
+        <div class="news-header">
+          <h2>{t(lang, 'home.news.title')}</h2>
+          <a href={`/${lang}/news`} class="btn btn-outline">{t(lang, 'home.news.all')}</a>
+        </div>
+        <div class="news-grid">
+          {latestNews.map(post => (
+            <a href={`/${lang}/news/${post.slug}`} class="card news-card">
+              <time>{post.data.date.toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'ca' ? 'ca-ES' : 'es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+              <span class="read-more">{t(lang, 'news.read_more')}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>{t(lang, 'cta.title')}</h2>
+    <p>{t(lang, 'cta.text')}</p>
+    <a href={`/${lang}/contact`} class="btn cta-btn">{t(lang, 'cta.btn')}</a>
+  </section>
+
+</Layout>
+
+<style>
+  .hero {
+    min-height: 85vh;
+    background: linear-gradient(135deg, var(--green-pale) 0%, #d4eadb 50%, var(--brown-light) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 1.5rem;
+  }
+
+  .hero-content h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 1rem; }
+  .hero-content p { font-size: 1.25rem; color: var(--text-muted); max-width: 560px; margin: 0 auto 2rem; }
+  .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* YOGA SECTION */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-text h2 { font-size: 2rem; margin-bottom: 1rem; }
+  .about-text p { color: var(--text-muted); margin-bottom: 1rem; }
+  .about-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .benefit-card { text-align: center; }
+  .benefit-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .benefit-card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+  .benefit-card p { font-size: 0.9rem; color: var(--text-muted); }
+
+  /* KUNDALINI */
+  .kundalini-section {
+    background: linear-gradient(135deg, #1a2e22 0%, #2d4a35 60%, #3a3020 100%);
+    color: var(--white);
+  }
+
+  .kundalini-section .container { padding-top: 4rem; padding-bottom: 4rem; }
+
+  .kundalini-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) { .kundalini-inner { grid-template-columns: 1fr; } }
+
+  .section-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .kundalini-text h2 { color: var(--white); font-size: 2.2rem; margin-bottom: 1.25rem; }
+  .kundalini-text p { color: rgba(255,255,255,0.8); margin-bottom: 1rem; line-height: 1.8; }
+
+  .kundalini-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1rem;
+  }
+
+  .kundalini-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 0.9rem 1.1rem;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .k-icon { color: var(--green-light); font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+  /* ABOUT ME */
+  .aboutme-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) { .aboutme-grid { grid-template-columns: 1fr; } }
+
+  .aboutme-img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    aspect-ratio: 3/4;
+    box-shadow: var(--shadow);
+  }
+
+  .aboutme-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--green-pale);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    border: 2px dashed var(--green-light);
+  }
+
+  .aboutme-text .section-label { color: var(--green); }
+  .aboutme-text h2 { font-size: 2rem; margin-bottom: 0.25rem; }
+  .aboutme-role { color: var(--brown); font-style: italic; margin-bottom: 1.25rem; }
+  .aboutme-text p { color: var(--text-muted); margin-bottom: 1rem; }
+  .aboutme-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+  /* NEWS */
+  .news-section { background: var(--brown-light); padding: 1rem 0; }
+  .news-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+  .news-header h2 { font-size: 2rem; margin: 0; }
+
+  .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+  .news-card { display: flex; flex-direction: column; gap: 0.5rem; color: var(--text); transition: transform 0.2s, box-shadow 0.2s; }
+  .news-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); text-decoration: none; }
+  .news-card time { font-size: 0.85rem; color: var(--text-muted); }
+  .news-card h3 { font-size: 1.15rem; color: var(--green); }
+  .news-card p { font-size: 0.95rem; color: var(--text-muted); flex: 1; }
+  .read-more { font-size: 0.9rem; color: var(--green); font-style: italic; }
+
+  /* CTA */
+  .cta-section { background: var(--green); color: var(--white); text-align: center; padding: 5rem 1.5rem; }
+  .cta-section h2 { color: var(--white); font-size: 2.2rem; margin-bottom: 0.75rem; }
+  .cta-section p { font-size: 1.15rem; margin-bottom: 2rem; opacity: 0.9; }
+  .cta-btn { background: var(--white); color: var(--green); }
+  .cta-btn:hover { background: var(--green-pale); color: var(--green); }
+</style>

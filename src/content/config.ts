@@ -34,4 +34,29 @@ const oils = defineCollection({
   }),
 });
 
-export const collections = { news, schedules, oils };
+const about = defineCollection({
+  type: 'content',
+  schema: z.object({
+    name: z.string(),
+    title: z.string(),
+    bio: z.string(),
+    bio2: z.string().optional(),
+    image: z.string().optional(),
+  }),
+});
+
+const settings = defineCollection({
+  type: 'data',
+  schema: z.object({
+    instagram_handle: z.string().optional(),
+    instagram_url: z.string().optional(),
+    instagram_posts: z.array(z.object({
+      url: z.string(),
+      caption: z.string().optional(),
+    })).optional(),
+    facebook_url: z.string().optional(),
+    whatsapp: z.string().optional(),
+  }),
+});
+
+export const collections = { news, schedules, oils, about, settings };

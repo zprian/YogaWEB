@@ -1,0 +1,175 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { t, supportedLangs, type Lang } from '../../../i18n/translations';
+
+export function getStaticPaths() {
+  return supportedLangs.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+
+const posts = (await getCollection('news'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const social = await getEntry('settings', 'social');
+const instagramHandle = social?.data.instagram_handle ?? '';
+const instagramUrl = social?.data.instagram_url ?? '';
+const instagramPosts = (social?.data.instagram_posts ?? []).filter(p => p.url);
+---
+
+<Layout title={t(lang, 'nav.news')} lang={lang}>
+
+  <section class="page-hero">
+    <h1>{t(lang, 'news.title')}</h1>
+    <p>{t(lang, 'news.subtitle')}</p>
+  </section>
+
+  <div class="container">
+    <div class="news-layout">
+
+      <!-- POSTS LIST -->
+      <div class="posts-col">
+        {posts.length === 0 && <p style="color:var(--text-muted)">{t(lang, 'news.empty')}</p>}
+        <div class="posts-list">
+          {posts.map(post => (
+            <a href={`/${lang}/news/${post.slug}`} class="card post-item">
+              {post.data.image && <img src={post.data.image} alt={post.data.title} class="post-image" />}
+              <div class="post-content">
+                <time>{post.data.date.toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'ca' ? 'ca-ES' : 'es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                <h2>{post.data.title}</h2>
+                <p>{post.data.description}</p>
+                <span class="read-more">{t(lang, 'news.read_more')}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- INSTAGRAM SIDEBAR -->
+      <aside class="instagram-col">
+        <div class="card instagram-card">
+          <div class="ig-header">
+            <span class="ig-icon">📸</span>
+            <h3>{t(lang, 'news.instagram_title')}</h3>
+          </div>
+
+          {instagramHandle && (
+            <a href={instagramUrl || `https://instagram.com/${instagramHandle}`} target="_blank" rel="noopener" class="ig-handle">
+              @{instagramHandle}
+            </a>
+          )}
+
+          {instagramPosts.length > 0 ? (
+            <div class="ig-posts">
+              {instagramPosts.map(post => (
+                <div class="ig-embed-wrap">
+                  <blockquote
+                    class="instagram-media"
+                    data-instgrm-permalink={post.url}
+                    data-instgrm-version="14"
+                    style="border:0; margin:0; padding:0; width:100%"
+                  >
+                    <a href={post.url} target="_blank" rel="noopener" class="ig-post-link">
+                      {post.caption || t(lang, 'news.instagram_cta')}
+                    </a>
+                  </blockquote>
+                </div>
+              ))}
+              <script async src="//www.instagram.com/embed.js"></script>
+            </div>
+          ) : (
+            <div class="ig-placeholder">
+              <div class="ig-grid">
+                {[...Array(6)].map(() => <div class="ig-tile"></div>)}
+              </div>
+              {instagramUrl && (
+                <a href={instagramUrl} target="_blank" rel="noopener" class="btn" style="width:100%; text-align:center; margin-top:1rem">
+                  {t(lang, 'news.instagram_cta')}
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+</Layout>
+
+<style>
+  .news-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .news-layout { grid-template-columns: 1fr; }
+    .instagram-col { order: -1; }
+  }
+
+  /* POSTS */
+  .posts-list { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .post-item { display: flex; flex-direction: column; gap: 0; color: var(--text); transition: transform 0.2s; overflow: hidden; padding: 0; }
+  .post-item:hover { transform: translateX(4px); text-decoration: none; }
+
+  .post-image { width: 100%; height: 220px; object-fit: cover; border-radius: var(--radius) var(--radius) 0 0; }
+
+  .post-content { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .post-content time { font-size: 0.85rem; color: var(--text-muted); }
+  .post-content h2 { font-size: 1.3rem; }
+  .post-content p { color: var(--text-muted); font-size: 0.95rem; }
+  .read-more { font-size: 0.9rem; color: var(--green); font-style: italic; }
+
+  /* INSTAGRAM SIDEBAR */
+  .instagram-card { position: sticky; top: 100px; }
+
+  .ig-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
+  .ig-icon { font-size: 1.4rem; }
+  .ig-header h3 { font-size: 1.1rem; margin: 0; }
+
+  .ig-handle {
+    display: inline-block;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .ig-handle:hover { color: var(--green); }
+
+  .ig-posts { display: flex; flex-direction: column; gap: 1rem; }
+
+  .ig-embed-wrap { border-radius: var(--radius); overflow: hidden; }
+
+  /* Placeholder grid when no posts configured */
+  .ig-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .ig-tile {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, var(--green-pale), #c8e6d0);
+    animation: shimmer 2s infinite alternate;
+  }
+
+  @keyframes shimmer {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+  }
+
+  .ig-post-link {
+    display: block;
+    padding: 1rem;
+    text-align: center;
+    color: var(--green);
+    font-size: 0.9rem;
+  }
+</style>
