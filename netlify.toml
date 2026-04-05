@@ -8,9 +8,23 @@
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
 
-# Netlify Identity for CMS auth
+# Security headers for all pages
 [[headers]]
-  for = "/admin/*"
+  for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Permitted-Cross-Domain-Policies = "none"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://identity.netlify.com https://www.instagram.com https://unpkg.com;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' https: data:;
+      frame-src https://www.instagram.com;
+      connect-src 'self' https://identity.netlify.com https://api.github.com https://*.netlify.com;
+      font-src 'self';
+      object-src 'none';
+      base-uri 'self';
+    """

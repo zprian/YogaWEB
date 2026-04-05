@@ -13,9 +13,23 @@ const posts = (await getCollection('news'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const social = await getEntry('settings', 'social');
-const instagramHandle = social?.data.instagram_handle ?? '';
-const instagramUrl = social?.data.instagram_url ?? '';
-const instagramPosts = (social?.data.instagram_posts ?? []).filter(p => p.url);
+
+// Validate URLs are https:// and belong to allowed domains only
+const ALLOWED_SOCIAL_DOMAINS = ['instagram.com', 'www.instagram.com', 'facebook.com', 'www.facebook.com'];
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' && ALLOWED_SOCIAL_DOMAINS.includes(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
+const instagramHandle = (social?.data.instagram_handle ?? '').replace(/[^a-zA-Z0-9._]/g, '');
+const rawInstagramUrl = social?.data.instagram_url ?? '';
+const instagramUrl = isSafeUrl(rawInstagramUrl) ? rawInstagramUrl : '';
+const instagramPosts = (social?.data.instagram_posts ?? [])
+  .filter(p => p.url && isSafeUrl(p.url));
 ---
 
 <Layout title={t(lang, 'nav.news')} lang={lang}>
